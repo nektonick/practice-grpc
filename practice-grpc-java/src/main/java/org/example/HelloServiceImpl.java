@@ -5,8 +5,6 @@ import org.example.grpc.HelloServiceGrpc.HelloServiceImplBase;
 import org.example.grpc.HelloServiceOuterClass.HelloRequest;
 import org.example.grpc.HelloServiceOuterClass.HelloResponse;
 
-;
-
 public class HelloServiceImpl extends HelloServiceImplBase {
 
     @Override

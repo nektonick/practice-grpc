@@ -53,31 +53,59 @@
         </extensions>
         <plugins>
             <plugin>
-                <groupId>org.xolstice.maven.plugins</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-                <version>${protobuf-maven-plugin.version}</version>
-                <configuration>
-                    <protocArtifact>
-                        com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}
-                    </protocArtifact>
-                    <pluginId>grpc-java</pluginId>
-                    <pluginArtifact>
-                        io.grpc:protoc-gen-grpc-java:${io.grpc.version}:exe:${os.detected.classifier}
-                    </pluginArtifact>
-
-                    <!--Use proto folder from parent folder-->
-                    <protoSourceRoot>${basedir}/../proto</protoSourceRoot>
-
-                    <!--Disable directory clean because of weird behaviour: -->
-                    <!--https://github.com/xolstice/protobuf-maven-plugin/issues/35-->
-                    <clearOutputDirectory>false</clearOutputDirectory>
-                </configuration>
+                <groupId>com.github.os72</groupId>
+                <artifactId>protoc-jar-maven-plugin</artifactId>
+                <version>3.11.4</version>
                 <executions>
                     <execution>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>compile</goal>
-                            <goal>compile-custom</goal>
+                            <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <optimizeCodegen>false</optimizeCodegen>
+                            <protocVersion>3.23.0</protocVersion>
+                            <includeStdTypes>true</includeStdTypes>
+
+                            <addProtoSources>all</addProtoSources>
+                            <includeMavenTypes>direct</includeMavenTypes>
+                            <inputDirectories>
+                                <include>${basedir}/../proto</include>
+                            </inputDirectories>
+
+                            <protocArtifact>com.google.protobuf:protoc:${protoc.version}</protocArtifact>
+
+                            <outputTargets>
+                                <outputTarget>
+                                    <type>java</type>
+                                    <outputDirectory>target/generated-sources</outputDirectory>
+                                </outputTarget>
+                                <outputTarget>
+                                    <type>grpc-java</type>
+                                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.19.0</pluginArtifact>
+                                    <outputDirectory>target/generated-sources</outputDirectory>
+                                </outputTarget>
+                            </outputTargets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>Make IntelliJ IDEA happy about generated sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/target/generated-sources</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
