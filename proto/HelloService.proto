@@ -2,8 +2,9 @@ syntax = "proto3";
 package org.example.grpc;
 
 message HelloRequest {
-  string firstName = 1;
-  string lastName = 2;
+  uint64 id = 1;
+  string firstName = 2;
+  string lastName = 3;
 }
 
 message HelloResponse {
