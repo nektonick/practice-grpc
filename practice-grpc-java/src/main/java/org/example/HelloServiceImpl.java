@@ -8,21 +8,16 @@ import org.example.grpc.HelloServiceOuterClass.HelloResponse;
 public class HelloServiceImpl extends HelloServiceImplBase {
 
     @Override
-    public void hello(
-            HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
+    public void hello(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
+        System.out.println("Start processing HelloRequest with id: " + request.getId());
 
-        String greeting = new StringBuilder()
-                .append("Hello, ")
-                .append(request.getFirstName())
-                .append(" ")
-                .append(request.getLastName())
-                .toString();
-
+        String greeting = String.format("Hello, %s %s!", request.getFirstName(), request.getLastName());
         HelloResponse response = HelloResponse.newBuilder()
                 .setGreeting(greeting)
                 .build();
-
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+
+        System.out.println("Finish processing HelloRequest with id: " + request.getId());
     }
 }
